@@ -1,0 +1,17 @@
+Scope: Predict the loss ratio (Claims/ Total Insured Value) for flood events induced by Hurricane
+
+Summary
+The dataset is derived from the system of national insurance flood act. The data sets consist historical data of 42 attributes and 
+2.5 millions of records. The attributes include information of Policy, Coverage values, Claim Values, location info,
+building features, elevation, Flood Vulnerability and miscellaneous details.
+
+To identify claim records for flood event induced by Hurricane, a historical data set of hurricane events for 50 years was used. 
+This allowed the data to segregate into two categories
+1. Hurricane induced flood 
+2. Actual flood
+
+After extracting records reported for flood claims induced by Hurricane, the No of records remaining for further analysis was 844k. 
+A Hurricane can event may cause flood after few days from the beginning of the event. We assumed that the duration could range from 
+5 to 7 days. Based on the no of days and the affected states, records with flood claims were extracted.
+
+
