@@ -1,17 +1,101 @@
-Scope: Predict the loss ratio (Claims/ Total Insured Value) for flood events induced by Hurricane
-
 Summary
-The dataset is derived from the system of national insurance flood act. The data sets consist historical data of 42 attributes and 
-2.5 millions of records. The attributes include information of Policy, Coverage values, Claim Values, location info,
-building features, elevation, Flood Vulnerability and miscellaneous details.
+The dataset is derived from the system of national insurance flood act. The data sets consist historical data of for approximately 50 years with 42 attributes and 2.5 millions of records The attributes include information of Policy, Coverage values, Claim Values, location info, building features, elevation, Flood Vulnerability and miscellaneous details.
 
-To identify claim records for flood event induced by Hurricane, a historical data set of hurricane events for 50 years was used. 
-This allowed the data to segregate into two categories
+
+Hurricane events was derived from Data archive of National Hurricane Center.
+This dataset (known as Atlantic HURDAT2) has a comma-delimited with information on the location, maximum winds, central pressure, Event date and how long did it start and (beginning in 2004) size of all known tropical cyclones and subtropical cyclones.
+
+Problem statement: Predict the loss ratio (Claims/ Total Insured Value) for flood events induced by Hurricane
+
+
+To identify claim records for flood event induced by Hurricane, a historical data set of hurricane events for 50 years was used. This allowed the data to segregate into two categories
 1. Hurricane induced flood 
 2. Actual flood
 
-After extracting records reported for flood claims induced by Hurricane, the No of records remaining for further analysis was 844k. 
-A Hurricane can event may cause flood after few days from the beginning of the event. We assumed that the duration could range from 
-5 to 7 days. Based on the no of days and the affected states, records with flood claims were extracted.
+Data Cleaning
+Duplicate Records
+No Claims or negative reported Claims 
+Limited address information 
+Converting NA values to 0
+
+Data Transformation/ Feature Engineering
+
+Flood zones were provided but were not defined. They were defined based on the documentation released by FEMA. They were categorized by varying levels of flood risk.
+
+I included Loss Ratio that was derived from Claim value/Coverage value 
 
 
+Outlier Treatment
+
+As seen below the data had significant number of outliers. We couldn’t treat outliers as they represent high claim amount
+
+Elevation Information was provided with 5 variables that had 80% of missing values and had outliers. After reading some document, I observed that the elevation information isn’t important for all the flood Zones. 
+Missing Value Imputation
+•	Single Imputation
+•	Multiple Imputation - multiple imputation estimates the values multiple times
+
+
+Therefore, the missing values of the elevation attributes are updated with the Interquartile range for Zone based on the level of risk. While the minimum and maximum outliers were scaled with 25th and 75th percentile. 
+
+
+EDA: I sliced and diced the data  and Graphicaly  represented Univariate and bivariate analysis in
+T he highest claims from flood event were reported for 2005 followed by 2012 and 2017.
+In the year 2005, Loss angles reported maximum claims from floods induced by Katrina. Texas reported the second highest claims in 2017 due to Harvey
+Loss Angeles records the severe loss till date
+Some of the factors that encountered high losses were:
+Properties with no obstruction 
+Locations with no Elevation 
+Construction before 1975 
+Content located at the Lowest floor above the ground
+Single Family Occupancy 
+Permanent Residents 
+
+Other parameters were driven by unknown, their contribution towards the Loss ratio is undefined
+
+The next step was segregate the records for flood event induced by Hurricane 
+
+I identified these records by calculating the days affected by an event based on the start date and the end date provided by the Hurr Event set.
+
+A Hurricane event may cause flood after few days from the beginning of the event. We assumed that the duration could range from 5 to 7 days. Based on the no of days and the affected states, records with flood claims were extracted.
+
+The No of records reduced from 2.5 m to 0.8m
+
+One Hot encoding
+There were 113 attributes that were to be employed for building the model
+
+Feature Selection
+
+To identify significant variables, step-AIC was used and we were able to reduce the independent variables to 98
+
+Unsupervised technique called Principle Component Analysis was used identify the key metrics.
+
+1st round : 98 predictors to 80 without compromising on explained variance. explains around 98.4% variance
+
+The analysis identified “unknown” attributes for small business, Workship, Obtruction type and Firm Indicator. Having Unknown as PC would not add value to the model. Therefore, records with the above mentioned unknown attributes were excluded from modeling. The number of records were reduced to approximately 36k
+
+
+After several iteration od PCA, I identified 9 attributes that explained 88% of the variability and 
+
+Different techniques employed to visualize were scree plot, elbow plot, factor loading table, correlational circle
+
+
+Model building:
+Linear Regression
+mae        mse       rmse       mape 
+# 15.48 482.44   21.96   7.73
+
+RF
+mae       mse      rmse      mape 
+# 3.48  74.12     8.6       1.64
+
+GBM
+# mae        mse       rmse       mape 
+# 8.867185 182.649528  13.514789   4.588170
+
+XGBoost
+mae              mse      rmse      mape 
+# 6.10          94.84  	9.7          3.34
+
+Random forest gave better accuracy.
+
+Next step will be to separate outliers and build models over it.
